@@ -1,0 +1,49 @@
+version: "3"
+services:
+  # MySQL container
+  mysql:
+    container_name: mysql
+    hostname: mysql
+    build: ${PWD}/config/mysql
+    environment:
+      MYSQL_ROOT_PASSWORD: "${MYSQL_ROOT_PASSWORD}"
+      MYSQL_DATABASE: "mysqldb"
+    networks: ['my_net_stack']
+    # Expose port 3306 to allow users to connect and perform operations.
+    ports: ['3306:3306']
+    volumes:
+      # Use named volume so mysql data is persisted across restart
+      - mysqldata:/var/lib/mysql/
+      # Logs are mounted to a relative path
+      - ./logs/mysql:/var/log/mysql/
+    healthcheck:
+        test: ["CMD", "mysqladmin" ,"ping", "-h", "mysql"]
+        timeout: 20s
+        retries: 10
+
+  # Contacts container
+  contacts:
+    container_name: contacts
+    hostname: contacts
+    build: /Users/celeguim/spring-contact-manager
+    networks: ['my_net_stack']
+    # Expose port 8081
+    ports: ['8081:8081']
+    depends_on:
+      mysql:
+        condition: service_healthy
+    volumes:
+      # Logs are mounted to a relative path
+      - ./logs/contacts:/var/log/
+
+volumes:
+  # MySQL data
+  mysqldata:
+    driver: local
+  # Elasticsearch data
+  esdata:
+    driver: local
+  # Filebeat data i.e. registry file
+  fbdata:
+    driver: local
+networks: {my_net_stack: {}}
