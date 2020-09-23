@@ -4,7 +4,7 @@ sudo docker build --tag my-python-app .
 
 sudo docker run --rm --name python-app -p 5000:5000 my-python-app
 
-sudo docker kill $(sudo docker ps -a -q)
+docker kill $(sudo docker ps -a -q)
 
 yes| docker system prune
 yes| docker volume prune

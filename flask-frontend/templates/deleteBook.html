@@ -1,0 +1,7 @@
+<h2> Are you sure you want to delete {{book.title}}? </h2>
+<form action="#" method='post'>
+    <button type="submit" name="submit" value="submit">Delete</button>
+    <a href='{{url_for("show_books")}}'>
+        <button name="cancel" value="cancel">Cancel</button>
+    </a>
+</form>
